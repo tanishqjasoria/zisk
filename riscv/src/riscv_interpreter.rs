@@ -121,6 +121,19 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                 i.imm = signext((inst & 0xFFF00000) >> 20, 12);
                 let l: i32;
                 (i.inst, l) = getinst(&inf.op, i.funct3, funct7);
+                if i.inst.is_empty() {
+                    eprintln!("ERROR: Failed to decode I-type instruction");
+                    eprintln!("  Position: code_index={}", code_index);
+                    eprintln!("  Raw instruction: 0x{:08x}", inst);
+                    eprintln!("  Opcode: {} (0x{:x})", opcode, opcode);
+                    eprintln!("  Type: I (Immediate)");
+                    eprintln!("  funct3: {} (0x{:x})", i.funct3, i.funct3);
+                    eprintln!("  funct7: {} (0x{:x})", funct7, funct7);
+                    eprintln!("  rd: x{}", i.rd);
+                    eprintln!("  rs1: x{}", i.rs1);
+                    eprintln!("  imm: {}", i.imm);
+                    panic!("Unsupported I-type instruction - see details above");
+                }
                 assert!(!i.inst.is_empty());
                 if l == 2 {
                     i.imm &= 0x3F;
@@ -136,6 +149,19 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                 i.rs2 = (inst & 0x1F00000) >> 20;
                 i.funct7 = (inst & 0xFE000000) >> 25;
                 (i.inst, _) = getinst(&inf.op, i.funct3, i.funct7);
+                if i.inst.is_empty() {
+                    eprintln!("ERROR: Failed to decode R-type instruction");
+                    eprintln!("  Position: code_index={}", code_index);
+                    eprintln!("  Raw instruction: 0x{:08x}", inst);
+                    eprintln!("  Opcode: {} (0x{:x})", opcode, opcode);
+                    eprintln!("  Type: R (Register)");
+                    eprintln!("  funct3: {} (0x{:x})", i.funct3, i.funct3);
+                    eprintln!("  funct7: {} (0x{:x})", i.funct7, i.funct7);
+                    eprintln!("  rd: x{}", i.rd);
+                    eprintln!("  rs1: x{}", i.rs1);
+                    eprintln!("  rs2: x{}", i.rs2);
+                    panic!("Unsupported R-type instruction - see details above");
+                }
                 assert!(!i.inst.is_empty());
             }
             //  31 30 ... 26 25 24 ... 20 19 ... 15 14 13 12 11 10 09 08 07 06 05 04 03 02 01 00
@@ -193,6 +219,24 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                 i.aq = (inst & 0x4000000) >> 26;
                 i.rl = (inst & 0x2000000) >> 24;
                 (i.inst, _) = getinst(&inf.op, i.funct3, i.funct5);
+                if i.inst.is_empty() {
+                    eprintln!("ERROR: Failed to decode atomic instruction (A-type)");
+                    eprintln!("  Position: code_index={}", code_index);
+                    eprintln!("  Raw instruction: 0x{:08x}", inst);
+                    eprintln!("  Opcode: {} (0x{:x})", opcode, opcode);
+                    eprintln!("  Type: A (Atomic)");
+                    eprintln!("  funct3: {} (0x{:x})", i.funct3, i.funct3);
+                    eprintln!("  funct5: {} (0x{:x})", i.funct5, i.funct5);
+                    eprintln!("  rd: x{}", i.rd);
+                    eprintln!("  rs1: x{}", i.rs1);
+                    eprintln!("  rs2: x{}", i.rs2);
+                    eprintln!("  aq: {}", i.aq);
+                    eprintln!("  rl: {}", i.rl);
+                    eprintln!("\nSupported atomic instructions:");
+                    eprintln!("  funct3=2 (word): lr.w, sc.w, amoswap.w, amoadd.w, amoxor.w, amoand.w, amoor.w, amomin.w, amomax.w, amominu.w, amomaxu.w");
+                    eprintln!("  funct3=3 (doubleword): lr.d, sc.d, amoswap.d, amoadd.d, amoxor.d, amoand.d, amoor.d, amomin.d, amomax.d, amominu.d, amomaxu.d");
+                    panic!("Unsupported atomic instruction - see details above");
+                }
                 assert!(!i.inst.is_empty());
             } else if i.t == *"C" {
                 i.funct3 = (inst & 0x7000) >> 12;
@@ -215,6 +259,22 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                     }
                     i.csr = (inst & 0xFFF00000) >> 20;
                     (i.inst, _) = getinst(&inf.op, i.funct3, 0);
+                    if i.inst.is_empty() {
+                        eprintln!("ERROR: Failed to decode C-type instruction (CSR)");
+                        eprintln!("  Position: code_index={}", code_index);
+                        eprintln!("  Raw instruction: 0x{:08x}", inst);
+                        eprintln!("  Opcode: {} (0x{:x})", opcode, opcode);
+                        eprintln!("  Type: C (CSR)");
+                        eprintln!("  funct3: {} (0x{:x})", i.funct3, i.funct3);
+                        eprintln!("  csr: {} (0x{:x})", i.csr, i.csr);
+                        eprintln!("  rd: x{}", i.rd);
+                        if (i.funct3 & 0x4) != 0 {
+                            eprintln!("  imme: {}", i.imme);
+                        } else {
+                            eprintln!("  rs1: x{}", i.rs1);
+                        }
+                        panic!("Unsupported C-type (CSR) instruction - see details above");
+                    }
                     assert!(!i.inst.is_empty());
                 }
             } else if i.t == *"F" {
