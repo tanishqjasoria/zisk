@@ -398,6 +398,17 @@ impl Rvd {
             info.op.map.insert(7, RvdOperation { s: String::from("csrrci"), map: HashMap::new() });
             self.opcodes.insert(115, info);
         }
+
+        // Opcode 119 (0x77) - custom-3 opcode space
+        // This is used by .NET NativeAOT for embedded metadata/strings in .text section
+        // We treat it as a NOP/unknown instruction to allow decoding to continue
+        {
+            let info = RvdInfo {
+                t: String::from("X"),  // X for "unknown/data"
+                op: RvdOperation { s: String::from("unknown"), map: HashMap::new() },
+            };
+            self.opcodes.insert(119, info);
+        }
     }
 
     // Converts a compressed register index (e.g. rs1') to a full register index (e.g. rs1)

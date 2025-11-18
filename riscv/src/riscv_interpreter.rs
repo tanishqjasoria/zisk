@@ -313,6 +313,15 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                 } else {
                     panic!("Invalid opcode={opcode} at index={code_index}");
                 }
+            } else if i.t == *"X" {
+                // X-type: Unknown/data instruction (e.g., embedded metadata in .text section)
+                // This is used by .NET NativeAOT and other compilers that embed data in code sections
+                // We decode it but it should never be executed
+                i.inst = "unknown".to_string();
+                // Store the raw instruction for debugging
+                i.rd = (inst & 0xF80) >> 7;
+                i.rs1 = (inst & 0xF8000) >> 15;
+                i.rs2 = (inst & 0x1F00000) >> 20;
             } else {
                 panic!("Invalid i.t={} at index={}", i.t, code_index);
             }
