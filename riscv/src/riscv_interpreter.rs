@@ -116,6 +116,7 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                 eprintln!("  47 (0x2f): AMO, 51 (0x33): OP, 55 (0x37): LUI");
                 eprintln!("  59 (0x3b): OP-32, 99 (0x63): BRANCH, 103 (0x67): JALR");
                 eprintln!("  111 (0x6f): JAL, 115 (0x73): SYSTEM");
+                eprintln!("  11 (0x0b), 43 (0x2b), 71 (0x47), 119 (0x77): Custom/Unknown (embedded data)");
                 panic!("Unsupported opcode - see details above");
             }
             let inf = &rvd.opcodes[&opcode];

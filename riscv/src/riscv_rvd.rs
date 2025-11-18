@@ -399,15 +399,16 @@ impl Rvd {
             self.opcodes.insert(115, info);
         }
 
-        // Opcode 119 (0x77) - custom-3 opcode space
-        // This is used by .NET NativeAOT for embedded metadata/strings in .text section
-        // We treat it as a NOP/unknown instruction to allow decoding to continue
-        {
+        // Custom opcodes (0x0b, 0x2b, 0x47, 0x77) - custom/reserved opcode spaces
+        // These are used by .NET NativeAOT for embedded metadata/strings in .text section
+        // We treat them as NOP/unknown instructions to allow decoding to continue
+        // 0x0b = custom-0, 0x2b = custom-1, 0x47 = MSUB (FP), 0x77 = reserved
+        for opcode in [0x0b, 0x2b, 0x47, 0x77] {
             let info = RvdInfo {
                 t: String::from("X"),  // X for "unknown/data"
                 op: RvdOperation { s: String::from("unknown"), map: HashMap::new() },
             };
-            self.opcodes.insert(119, info);
+            self.opcodes.insert(opcode, info);
         }
     }
 
