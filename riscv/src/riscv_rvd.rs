@@ -139,6 +139,51 @@ impl Rvd {
                 t: String::from("A"),
                 op: RvdOperation { s: String::new(), map: HashMap::new() },
             };
+            // funct3=0: byte atomics (non-standard extension)
+            {
+                let mut op = RvdOperation { s: String::new(), map: HashMap::new() };
+                op.map.insert(2, RvdOperation { s: String::from("lr.b"), map: HashMap::new() });
+                op.map.insert(3, RvdOperation { s: String::from("sc.b"), map: HashMap::new() });
+                op.map
+                    .insert(1, RvdOperation { s: String::from("amoswap.b"), map: HashMap::new() });
+                op.map.insert(0, RvdOperation { s: String::from("amoadd.b"), map: HashMap::new() });
+                op.map.insert(4, RvdOperation { s: String::from("amoxor.b"), map: HashMap::new() });
+                op.map
+                    .insert(12, RvdOperation { s: String::from("amoand.b"), map: HashMap::new() });
+                op.map.insert(8, RvdOperation { s: String::from("amoor.b"), map: HashMap::new() });
+                op.map
+                    .insert(16, RvdOperation { s: String::from("amomin.b"), map: HashMap::new() });
+                op.map
+                    .insert(20, RvdOperation { s: String::from("amomax.b"), map: HashMap::new() });
+                op.map
+                    .insert(24, RvdOperation { s: String::from("amominu.b"), map: HashMap::new() });
+                op.map
+                    .insert(28, RvdOperation { s: String::from("amomaxu.b"), map: HashMap::new() });
+                info.op.map.insert(0, op);
+            }
+            // funct3=1: halfword atomics (non-standard extension)
+            {
+                let mut op = RvdOperation { s: String::new(), map: HashMap::new() };
+                op.map.insert(2, RvdOperation { s: String::from("lr.h"), map: HashMap::new() });
+                op.map.insert(3, RvdOperation { s: String::from("sc.h"), map: HashMap::new() });
+                op.map
+                    .insert(1, RvdOperation { s: String::from("amoswap.h"), map: HashMap::new() });
+                op.map.insert(0, RvdOperation { s: String::from("amoadd.h"), map: HashMap::new() });
+                op.map.insert(4, RvdOperation { s: String::from("amoxor.h"), map: HashMap::new() });
+                op.map
+                    .insert(12, RvdOperation { s: String::from("amoand.h"), map: HashMap::new() });
+                op.map.insert(8, RvdOperation { s: String::from("amoor.h"), map: HashMap::new() });
+                op.map
+                    .insert(16, RvdOperation { s: String::from("amomin.h"), map: HashMap::new() });
+                op.map
+                    .insert(20, RvdOperation { s: String::from("amomax.h"), map: HashMap::new() });
+                op.map
+                    .insert(24, RvdOperation { s: String::from("amominu.h"), map: HashMap::new() });
+                op.map
+                    .insert(28, RvdOperation { s: String::from("amomaxu.h"), map: HashMap::new() });
+                info.op.map.insert(1, op);
+            }
+            // funct3=2: word atomics (standard)
             {
                 let mut op = RvdOperation { s: String::new(), map: HashMap::new() };
                 op.map.insert(2, RvdOperation { s: String::from("lr.w"), map: HashMap::new() });
@@ -160,6 +205,7 @@ impl Rvd {
                     .insert(28, RvdOperation { s: String::from("amomaxu.w"), map: HashMap::new() });
                 info.op.map.insert(2, op);
             }
+            // funct3=3: doubleword atomics (standard)
             {
                 let mut op = RvdOperation { s: String::new(), map: HashMap::new() };
                 op.map.insert(2, RvdOperation { s: String::from("lr.d"), map: HashMap::new() });

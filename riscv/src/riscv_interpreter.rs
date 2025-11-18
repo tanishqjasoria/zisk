@@ -233,6 +233,8 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                     eprintln!("  aq: {}", i.aq);
                     eprintln!("  rl: {}", i.rl);
                     eprintln!("\nSupported atomic instructions:");
+                    eprintln!("  funct3=0 (byte): lr.b, sc.b, amoswap.b, amoadd.b, amoxor.b, amoand.b, amoor.b, amomin.b, amomax.b, amominu.b, amomaxu.b");
+                    eprintln!("  funct3=1 (halfword): lr.h, sc.h, amoswap.h, amoadd.h, amoxor.h, amoand.h, amoor.h, amomin.h, amomax.h, amominu.h, amomaxu.h");
                     eprintln!("  funct3=2 (word): lr.w, sc.w, amoswap.w, amoadd.w, amoxor.w, amoand.w, amoor.w, amomin.w, amomax.w, amominu.w, amomaxu.w");
                     eprintln!("  funct3=3 (doubleword): lr.d, sc.d, amoswap.d, amoadd.d, amoxor.d, amoand.d, amoor.d, amomin.d, amomax.d, amominu.d, amomaxu.d");
                     panic!("Unsupported atomic instruction - see details above");
