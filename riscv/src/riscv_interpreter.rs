@@ -581,6 +581,11 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
                     | (offset4 << 4)
                     | (offset3_1 << 1);
                 i.imm = signext(offset, 12);
+            } else if i.t == "X" {
+                // X-type: Unknown/reserved compressed instruction (e.g., embedded metadata)
+                // This is used by .NET NativeAOT and other compilers for embedded data
+                // We decode it but it should never be executed
+                i.inst = "unknown".to_string();
             } else {
                 panic!("Invalid i.t={} at index={}", i.t, code_index);
             }

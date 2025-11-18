@@ -461,9 +461,7 @@ impl Rvd {
                     0x1 => ("CL", "c.fld"),       // Unmapped, i.e. not supported
                     0x2 => ("CL", "c.lw"),        // Mapped to lw: lw rd′, offset(rs1′)
                     0x3 => ("CL", "c.ld"),        // Mapped to ld: ld rd′, offset(rs1′)
-                    0x4 => {
-                        panic!("Rvd::get_type_and_name() reserved instruction inst=0x{inst:x}")
-                    }
+                    0x4 => ("X", "c.reserved"),   // Reserved in standard RVC, but used by some compilers for embedded data
                     0x5 => ("CS", "c.fsd"), // Unmapped, i.e. not supported
                     0x6 => ("CS", "c.sw"),  // Mapped to sw: sw rs2′,offset(rs1′)
                     0x7 => ("CS", "c.sd"),  // Mapped to sd: sd rs2′, offset(rs1′)
