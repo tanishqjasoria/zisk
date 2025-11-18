@@ -99,7 +99,24 @@ pub fn riscv_interpreter(code: &[u16]) -> Vec<RiscvInstruction> {
 
             // Get the RVD info data for this opcode
             if !rvd.opcodes.contains_key(&opcode) {
-                panic!("Invalid opcode={opcode}=0x{opcode:x} index={code_index}");
+                eprintln!("ERROR: Unsupported RISC-V opcode");
+                eprintln!("  Position: code_index={}", code_index);
+                eprintln!("  Raw instruction: 0x{:08x}", inst);
+                eprintln!("  Opcode: {} (0x{:02x})", opcode, opcode);
+                eprintln!("\nInstruction breakdown:");
+                eprintln!("  opcode[6:0]:  {} (0x{:02x})", opcode, opcode);
+                eprintln!("  rd[11:7]:     {}", (inst & 0xF80) >> 7);
+                eprintln!("  funct3[14:12]: {}", (inst & 0x7000) >> 12);
+                eprintln!("  rs1[19:15]:   {}", (inst & 0xF8000) >> 15);
+                eprintln!("  rs2[24:20]:   {}", (inst & 0x1F00000) >> 20);
+                eprintln!("  funct7[31:25]: {}", (inst & 0xFE000000) >> 25);
+                eprintln!("\nSupported opcodes:");
+                eprintln!("  3 (0x03): LOAD, 15 (0x0f): FENCE, 19 (0x13): OP-IMM");
+                eprintln!("  23 (0x17): AUIPC, 27 (0x1b): OP-IMM-32, 35 (0x23): STORE");
+                eprintln!("  47 (0x2f): AMO, 51 (0x33): OP, 55 (0x37): LUI");
+                eprintln!("  59 (0x3b): OP-32, 99 (0x63): BRANCH, 103 (0x67): JALR");
+                eprintln!("  111 (0x6f): JAL, 115 (0x73): SYSTEM");
+                panic!("Unsupported opcode - see details above");
             }
             let inf = &rvd.opcodes[&opcode];
 
